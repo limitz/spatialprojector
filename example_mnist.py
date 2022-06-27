@@ -48,21 +48,21 @@ class Example:
 			nn.Linear(50, 10),  # 10
 			nn.LogSoftmax(1)).to(self.device)
 
-		self.lossFunction = nn.NLLLoss().to(self.device)
+		self.loss_function = nn.NLLLoss().to(self.device)
 		self.optimizer = optim.Adam(self.model.parameters(), lr=0.001)
 
 	def epoch(self, idx):
-		for batchIdx, (img, gt) in enumerate(self.loader_training):
+		for batch_idx, (img, gt) in enumerate(self.loader_training):
 			img, gt = img.to(self.device), gt.to(self.device)
 			
 			self.optimizer.zero_grad()
 			pred = self.model(img)
-			loss = self.lossFunction(pred, gt)
+			loss = self.loss_function(pred, gt)
 			loss.backward()
 			self.optimizer.step()
 
-			if batchIdx % 100 == 0:
-				print(f"EPOCH {idx}:  {batchIdx} / {len(self.loader_training)} {loss.item()}")
+			if batch_idx % 100 == 0:
+				print(f"EPOCH {idx}:  {batch_idx} / {len(self.loader_training)} {loss.item()}")
 
 	def validate(self):
 		total_loss = 0
@@ -82,7 +82,7 @@ class Example:
 				img = img.to(self.device)
 				gt = gt.to(self.device)
 				pred = self.model(img)
-				total_loss += self.lossFunction(pred, gt).item()
+				total_loss += self.loss_function(pred, gt).item()
 				m = pred.max(1, keepdim=True)[1]
 				score += m.eq(gt.view_as(m)).sum().item()
 		

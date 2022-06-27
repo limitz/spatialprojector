@@ -60,7 +60,7 @@ class Example:
 			self.optimizer.zero_grad()
 			pred,theta = self.model(imgt * 2 - 1, include_theta=True)
 			pred = pred * 0.5 + 0.5
-			loss = self.loss_function(theta, gt)
+			loss = self.loss_function(theta, gt.unsqueeze(0))
 			loss.backward()
 			self.optimizer.step()
 

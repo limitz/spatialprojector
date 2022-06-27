@@ -134,8 +134,8 @@ class SpatialTransformer(nn.Module):
 		theta = self.localizer(x)
 		n,c = x.shape[:2]
 		h,w = self.out_size if self.out_size is not None else x.shape[2:]
-		grid = F.affine_grid(theta, (n,c,h,w))
-		y = F.grid_sample(x, grid)
+		grid = F.affine_grid(theta, (n,c,h,w), align_corners=False)
+		y = F.grid_sample(x, grid, align_corners=False)
 		return y
 
 class SpatialProjector(nn.Module):
@@ -150,7 +150,7 @@ class SpatialProjector(nn.Module):
 		n,c = x.shape[:2]
 		h,w = self.out_size if self.out_size is not None else x.shape[2:]
 		grid = perspective_grid(theta, (n,c,h,w))
-		y = F.grid_sample(x, grid)
+		y = F.grid_sample(x, grid, align_corners=False)
 		if include_theta:
 			return y, theta
 		else:
